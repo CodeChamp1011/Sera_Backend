@@ -82,15 +82,22 @@ func GetPartner(c *gin.Context) {
     //     })
     //     return
     // } 
-    if err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{
-            "status_code": 204,
-            "api_version": "v1",
-            "endpoint": "/GetPartner",
-            "status": "No Content !",
-            "msg":    "No Content !",
-        })
-        return
+    fmt.Println("1",user)
+
+    if err != nil || user.Email == "" {
+        err1 := database.Database.Raw("SELECT U.* FROM partners PP LEFT JOIN users U ON U.wallet_address = PP.wallet_address1 WHERE PP.wallet_address2 = ?", partner.Wallet_address1).Find(&user).Error
+        fmt.Println("2",user)
+        if err1 != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{
+                "status_code": 204,
+                "api_version": "v1",
+                "endpoint": "/GetPartner",
+                "status": "No Content !",
+                "msg":    "No Content !",
+            })
+            return
+        }  
+
     } 
 
 
